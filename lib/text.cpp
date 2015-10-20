@@ -9,9 +9,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// namespaces
-using namespace std;
-
 // text parser header
 #include "text.h"
 
@@ -174,7 +171,7 @@ char *text::get (const char *section, const char *key, const char *file) {
 	// declare variables
 	bool spres=false, kpres=false, vpres = false;
 	char ch, *line, pline[2048], *temp;
-	ifstream fin(file);
+	std::ifstream fin(file);
 	
 	// check if file exists
 	if (fin) {
@@ -257,7 +254,7 @@ char *text::parseline (char *data, bool rvalue) {
 	else if(data[0] == '[') {
 		
 		// determine section name
-		string stemp = data;
+		std::string stemp = data;
 		stemp = stemp.substr(1, find(data, ']')-1);
 		char *sname = (char*)stemp.c_str();
 		
@@ -275,9 +272,9 @@ char *text::parseline (char *data, bool rvalue) {
 			int pos = find(data, ':');
 			
 			// split key & data
-			string dtemp = data;
-			string keytemp = dtemp.substr(0, pos);
-			string valuetemp = dtemp.substr(pos+1, strlen(data)-pos+1);
+			std::string dtemp = data;
+			std::string keytemp = dtemp.substr(0, pos);
+			std::string valuetemp = dtemp.substr(pos+1, strlen(data)-pos+1);
 			
 			// assign data
 			char *key = (char*)keytemp.c_str();
@@ -318,8 +315,8 @@ bool text::set (const char *section, const char *key, const char *data) { return
 bool text::set (const char *section, const char *key, float data) {
 	
 	// declare variables
-	string cdata;
-	ostringstream converter;
+	std::string cdata;
+	std::ostringstream converter;
 	
 	// convert data
 	converter << data;
@@ -337,8 +334,8 @@ bool text::set (const char *section, const char *key, float data) {
 bool text::set (const char *section, const char *key, int data) {
 	
 	// declare variables
-	string cdata;
-	stringstream converter;
+	std::string cdata;
+	std::stringstream converter;
 	
 	// convert data
 	converter << data;
@@ -358,7 +355,7 @@ bool text::set (const char *section, const char *key, const char *data, const ch
 	// declare variables
 	bool spres=false, kpres=false, vpres = false;
 	char ch, *line, pline[2048], *temp;
-	string ofile = file;
+	std::string ofile = file;
 	
 	// backup file name
 	ofile += ".bak";
@@ -367,8 +364,8 @@ bool text::set (const char *section, const char *key, const char *data, const ch
 	rename(file, ofile.c_str());
 	
 	// construct streams
-	ofstream fout(file);
-	ifstream fin(ofile.c_str());
+	std::ofstream fout(file);
+	std::ifstream fin(ofile.c_str());
 	
 	// check if file exists
 	if (fin) {

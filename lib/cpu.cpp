@@ -1,7 +1,7 @@
 // cpu.cpp -- Gathers CPU information
 //            File Version: 1.1
 
-using namespace std;
+#include <iostream>
 
 #include "common.h"
 #include "cpu.h"
@@ -18,7 +18,7 @@ int detect_cpu(void) {
 		do_amd();
 		break;
 		default:
-		cout << "Unknown x86 CPU Detected\n";
+		std::cout << "Unknown x86 CPU Detected\n";
 		break;
 	}
 	return 0;
@@ -35,12 +35,12 @@ void printregs(int eax, int ebx, int ecx, int edx) {
 		string[j + 8] = ecx >> (8 * j);
 		string[j + 12] = edx >> (8 * j);
 	}
-	cout << string;
+	std::cout << string;
 }
 
 // AMD-specific information
 int do_amd(void) {
-	cout << "AMD Specific Features:\n";
+	std::cout << "AMD Specific Features:\n";
 	unsigned long extended, eax, ebx, ecx, edx, unused;
 	int family, model, stepping, reserved;
 	cpuid(1, eax, unused, unused, unused);
@@ -48,10 +48,10 @@ int do_amd(void) {
 	family = (eax >> 8) & 0xf;
 	stepping = eax & 0xf;
 	reserved = eax >> 12;
-	cout << "Family: " << family << " Model: " << model << " [";
+	std::cout << "Family: " << family << " Model: " << model << " [";
 	switch(family) {
 		case 4:
-		cout << "486 Model " << model;
+		std::cout << "486 Model " << model;
 		break;
 		case 5:
 		switch(model) {
@@ -61,16 +61,16 @@ int do_amd(void) {
 			case 3:
 			case 6:
 			case 7:
-			cout << "K6 Model " << model;
+			std::cout << "K6 Model " << model;
 			break;
 			case 8:
-			cout << "K6-2 Model 8";
+			std::cout << "K6-2 Model 8";
 			break;
 			case 9:
-			cout << "K6-III Model 9";
+			std::cout << "K6-III Model 9";
 			break;
 			default:
-			cout << "K5/K6 Model " << model;
+			std::cout << "K5/K6 Model " << model;
 			break;
 		}
 		break;
@@ -79,44 +79,44 @@ int do_amd(void) {
 			case 1:
 			case 2:
 			case 4:
-			cout << "Athlon Model " << model;
+			std::cout << "Athlon Model " << model;
 			break;
 			case 3:
-			cout << "Duron Model 3";
+			std::cout << "Duron Model 3";
 			break;
 			case 6:
-			cout << "Athlon MP/Mobile Athlon Model 6";
+			std::cout << "Athlon MP/Mobile Athlon Model 6";
 			break;
 			case 7:
-			cout << "Mobile Duron Model 7";
+			std::cout << "Mobile Duron Model 7";
 			break;
 			default:
-			cout << "Duron/Athlon Model " << model;
+			std::cout << "Duron/Athlon Model " << model;
 			break;
 		}
 		break;
 	}
-	cout << "]\n";
+	std::cout << "]\n";
 	cpuid(0x80000000, extended, unused, unused, unused);
 	if(extended == 0) {
 		return 0;
 	}
 	if(extended >= 0x80000002) {
 		unsigned int j;
-		cout << "Detected Processor Name: ";
+		std::cout << "Detected Processor Name: ";
 		for(j = 0x80000002; j <= 0x80000004; j++) {
 			cpuid(j, eax, ebx, ecx, edx);
 			printregs(eax, ebx, ecx, edx);
 		}
-		cout << "\n";
+		std::cout << "\n";
 	}
 	if(extended >= 0x80000007) {
 		cpuid(0x80000007, unused, unused, unused, edx);
 		if(edx & 1) {
-			cout << "Temperature Sensing Diode Detected!\n";
+			std::cout << "Temperature Sensing Diode Detected!\n";
 		}
 	}
-	cout << "Stepping: " << stepping << " Reserved: " << reserved << "\n";
+	std::cout << "Stepping: " << stepping << " Reserved: " << reserved << "\n";
 	return 0;
 }
 
@@ -179,7 +179,7 @@ char *Intel_Other[] = {
 
 // Intel-specific information
 int do_intel(void) {
-	cout << "Intel Specific Features:\n";
+	std::cout << "Intel Specific Features:\n";
 	unsigned long eax, ebx, ecx, edx, max_eax, signature, unused;
 	int model, family, type, brand, stepping, reserved;
 	int extended_family = -1;
@@ -191,45 +191,45 @@ int do_intel(void) {
 	stepping = eax & 0xf;
 	reserved = eax >> 14;
 	signature = eax;
-	cout << "Type " << type << " - ";
+	std::cout << "Type " << type << " - ";
 	switch(type) {
 		case 0:
-		cout << "Original OEM";
+		std::cout << "Original OEM";
 		break;
 		case 1:
-		cout << "Overdrive";
+		std::cout << "Overdrive";
 		break;
 		case 2:
-		cout << "Dual-capable";
+		std::cout << "Dual-capable";
 		break;
 		case 3:
-		cout << "Reserved";
+		std::cout << "Reserved";
 		break;
 	}
-	cout << "\n";
-	cout << "Family " << family << " - ";
+	std::cout << "\n";
+	std::cout << "Family " << family << " - ";
 	switch(family) {
 		case 3:
-		cout << "i386";
+		std::cout << "i386";
 		break;
 		case 4:
-		cout << "i486";
+		std::cout << "i486";
 		break;
 		case 5:
-		cout << "Pentium";
+		std::cout << "Pentium";
 		break;
 		case 6:
-		cout << "Pentium Pro";
+		std::cout << "Pentium Pro";
 		break;
 		case 15:
-		cout << "Pentium 4";
+		std::cout << "Pentium 4";
 	}
-	cout << "\n";
+	std::cout << "\n";
 	if(family == 15) {
 		extended_family = (eax >> 20) & 0xff;
-		cout << "Extended family " << extended_family << "\n";
+		std::cout << "Extended family " << extended_family << "\n";
 	}
-	cout << "Model " << model << " - ";
+	std::cout << "Model " << model << " - ";
 	switch(family) {
 		case 3:
 		break;
@@ -237,70 +237,70 @@ int do_intel(void) {
 		switch(model) {
 			case 0:
 			case 1:
-			cout << "DX";
+			std::cout << "DX";
 			break;
 			case 2:
-			cout << "SX";
+			std::cout << "SX";
 			break;
 			case 3:
-			cout << "487/DX2";
+			std::cout << "487/DX2";
 			break;
 			case 4:
-			cout << "SL";
+			std::cout << "SL";
 			break;
 			case 5:
-			cout << "SX2";
+			std::cout << "SX2";
 			break;
 			case 7:
-			cout << "Write-back enhanced DX2";
+			std::cout << "Write-back enhanced DX2";
 			break;
 			case 8:
-			cout << "DX4";
+			std::cout << "DX4";
 			break;
 		}
 		break;
 		case 5:
 		switch(model) {
 			case 1:
-			cout << "60/66";
+			std::cout << "60/66";
 			break;
 			case 2:
-			cout << "75-200";
+			std::cout << "75-200";
 			break;
 			case 3:
-			cout << "for 486 system";
+			std::cout << "for 486 system";
 			break;
 			case 4:
-			cout << "MMX";
+			std::cout << "MMX";
 			break;
 		}
 		break;
 		case 6:
 		switch(model) {
 			case 1:
-			cout << "Pentium Pro";
+			std::cout << "Pentium Pro";
 			break;
 			case 3:
-			cout << "Pentium II Model 3";
+			std::cout << "Pentium II Model 3";
 			break;
 			case 5:
-			cout << "Pentium II Model 5/Xeon/Celeron";
+			std::cout << "Pentium II Model 5/Xeon/Celeron";
 			break;
 			case 6:
-			cout << "Celeron";
+			std::cout << "Celeron";
 			break;
 			case 7:
-			cout << "Pentium III/Pentium III Xeon - external L2 cache";
+			std::cout << "Pentium III/Pentium III Xeon - external L2 cache";
 			break;
 			case 8:
-			cout << "Pentium III/Pentium III Xeon - internal L2 cache";
+			std::cout << "Pentium III/Pentium III Xeon - internal L2 cache";
 			break;
 		}
 		break;
 		case 15:
 		break;
 	}
-	cout << "\n";
+	std::cout << "\n";
 	cpuid(0x80000000, max_eax, unused, unused, unused);
 	/* Quok said: If the max extended eax value is high enough to support the processor brand string
 	(values 0x80000002 to 0x80000004), then we'll use that information to return the brand information. 
@@ -308,7 +308,7 @@ int do_intel(void) {
 	According to the Sept. 2006 Intel Arch Software Developer's Guide, if extended eax values are supported, 
 	then all 3 values for the processor brand string are supported, but we'll test just to make sure and be safe. */
 	if(max_eax >= 0x80000004) {
-		cout << "Brand: ";
+		std::cout << "Brand: ";
 		if(max_eax >= 0x80000002) {
 			cpuid(0x80000002, eax, ebx, ecx, edx);
 			printregs(eax, ebx, ecx, edx);
@@ -321,20 +321,20 @@ int do_intel(void) {
 			cpuid(0x80000004, eax, ebx, ecx, edx);
 			printregs(eax, ebx, ecx, edx);
 		}
-		cout << "\n";
+		std::cout << "\n";
 	} else if(brand > 0) {
-		cout << "Brand %d - " << brand;
+		std::cout << "Brand %d - " << brand;
 		if(brand < 0x18) {
 			if(signature == 0x000006B1 || signature == 0x00000F13) {
-				cout << "Intel_Other[brand]\n";
+				std::cout << "Intel_Other[brand]\n";
 			} else {
-				cout << "Intel[brand]\n";
+				std::cout << "Intel[brand]\n";
 			}
 		} else {
-			cout << "Reserved\n";
+			std::cout << "Reserved\n";
 		}
 	}
-	cout << "Stepping: " << stepping << " Reserved: " << reserved << "\n";
+	std::cout << "Stepping: " << stepping << " Reserved: " << reserved << "\n";
 	
 	return 0;
 }

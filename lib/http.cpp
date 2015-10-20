@@ -7,9 +7,6 @@
 #include <string.h>
 #include "netsock.h"
 
-// namespaces
-using namespace std;
-
 // http handler header
 #include "http.h"
 
@@ -21,7 +18,7 @@ const char *http::get (const char *hostname, const char *location) {
 	
 	// declare variables
 	netsock socket;
-	string hget, host;
+	std::string hget, host;
 	
 	// clear strings
 	hget.empty();

@@ -9,9 +9,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// namespaces
-using namespace std;
-
 // json class header
 #include "json.h"
 

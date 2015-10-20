@@ -1,19 +1,17 @@
-#define WIN32_LEAN_AND_MEAN
-
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <iomanip>
 
-// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "7900"
+//#define DEFAULT_PORT "7900"
 
 struct HexCharStruct
 {
@@ -23,7 +21,7 @@ struct HexCharStruct
 
 inline std::ostream& operator<<(std::ostream& o, const HexCharStruct& hs)
 {
-  return (o << std::hex << (int)hs.c);
+  return (o << std::setw(2) << std::setfill('0') << std::hex << (int)hs.c);
 }
 
 inline HexCharStruct hex(unsigned char _c)
@@ -31,28 +29,25 @@ inline HexCharStruct hex(unsigned char _c)
   return HexCharStruct(_c);
 }
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
 int main(int argc, char** argv)
 {
-	// TODO: Clear Data Buffer before each send and receive
-	//48 65 6c 6c 6f 21 0d 0a 06 1c 47
-	//6d 65 6f 77 6f 21 0d 0a 06 1c 47
-	
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo *result = NULL,
                     *ptr = NULL,
                     hints;
-    char *sendbuf = "Test.";
+    //char *sendbuf = "Test.";
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;
     
     // Validate the parameters
-    if (argc != 3) {
-        printf("Usage: %s host message\n", argv[0]);
+    if (argc != 4) {
+        printf("Usage: %s host port message\n", argv[0]);
         return 1;
     }
+    
+    char* message = argv[3];
 
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -61,14 +56,14 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    ZeroMemory( &hints, sizeof(hints) );
+    ZeroMemory(&hints, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
-    if ( iResult != 0 ) {
+    iResult = getaddrinfo(argv[1], argv[2], &hints, &result);
+    if (iResult != 0) {
         printf("getaddrinfo failed with error: %d\n", iResult);
         WSACleanup();
         return 1;
@@ -86,7 +81,7 @@ int main(int argc, char** argv)
         }
 
         // Connect to server.
-        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
         if (iResult == SOCKET_ERROR) {
             closesocket(ConnectSocket);
             ConnectSocket = INVALID_SOCKET;
@@ -104,7 +99,7 @@ int main(int argc, char** argv)
     }
 
     // Send an initial buffer
-    iResult = send( ConnectSocket, argv[2], (int)strlen(argv[2]), 0 );
+    iResult = send(ConnectSocket, message, (int)strlen(message), 0);
     if (iResult == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);

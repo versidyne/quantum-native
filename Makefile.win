@@ -1,0 +1,54 @@
+# Project: vexis-native
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+RES      = obj/vexis-native_private.res
+OBJ      = obj/common.o obj/cpu.o obj/error.o obj/http.o obj/json.o obj/netsock.o obj/text.o obj/main.o $(RES)
+LINKOBJ  = obj/common.o obj/cpu.o obj/error.o obj/http.o obj/json.o obj/netsock.o obj/text.o obj/main.o $(RES)
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -lws2_32
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = bin/vexis-native.exe
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+obj/common.o: lib/common.cpp
+	$(CPP) -c lib/common.cpp -o obj/common.o $(CXXFLAGS)
+
+obj/cpu.o: lib/cpu.cpp
+	$(CPP) -c lib/cpu.cpp -o obj/cpu.o $(CXXFLAGS)
+
+obj/error.o: lib/error.cpp
+	$(CPP) -c lib/error.cpp -o obj/error.o $(CXXFLAGS)
+
+obj/http.o: lib/http.cpp
+	$(CPP) -c lib/http.cpp -o obj/http.o $(CXXFLAGS)
+
+obj/json.o: lib/json.cpp
+	$(CPP) -c lib/json.cpp -o obj/json.o $(CXXFLAGS)
+
+obj/netsock.o: lib/netsock.cpp
+	$(CPP) -c lib/netsock.cpp -o obj/netsock.o $(CXXFLAGS)
+
+obj/text.o: lib/text.cpp
+	$(CPP) -c lib/text.cpp -o obj/text.o $(CXXFLAGS)
+
+obj/main.o: src/main.cpp
+	$(CPP) -c src/main.cpp -o obj/main.o $(CXXFLAGS)
+
+obj/vexis-native_private.res: vexis-native_private.rc 
+	$(WINDRES) -i vexis-native_private.rc --input-format=rc -o obj/vexis-native_private.res -O coff 
+

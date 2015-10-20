@@ -214,7 +214,7 @@ int netsock::send(int sock, const char *data) {
 	#endif
 
 	#if defined OS_WIN
-		n = send(sock, buffer, strlen(data), 0);
+		//n = send(sock, buffer, strlen(data), 0);
 	#endif
 	
 	if (n < 0) { error(1, 6, "writing to socket"); }

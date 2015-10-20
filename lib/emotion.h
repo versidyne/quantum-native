@@ -8,8 +8,8 @@
 
 // define types
 class connector;
-enum type_of_affection=
-{
+
+enum type_of_affection {
 	increase_dramatically,
 	increase,
 	increase_slightly,
@@ -40,6 +40,7 @@ class connector {
 		std::vector <Connection> connections;
 		
 };
+
 class emotion {
 	
 	public:

@@ -6,9 +6,6 @@
 #include <string>
 #include <stdio.h>
 
-// namespaces
-using namespace std;
-
 // header file
 #include "error.h"
 
@@ -20,7 +17,7 @@ void error(int abort, int code, const char *message) {
     else { perror(temp.c_str()); }*/
     
     // declare variables
-    string temp;
+    std::string temp;
     
     // build error message
     temp = "error %d: ";
